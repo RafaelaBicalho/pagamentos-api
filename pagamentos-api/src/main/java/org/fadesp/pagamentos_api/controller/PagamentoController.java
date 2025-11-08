@@ -33,4 +33,12 @@ public class PagamentoController {
             @RequestParam("novoStatus") StatusPagamento novoStatus) {
         return service.atualizarStatusPagamento(id, novoStatus);
     }
+
+    @GetMapping("/filtro")
+    public List<Pagamento> filtrarPagamentos(
+            @RequestParam(required = false) Integer codigoDebito,
+            @RequestParam(required = false) String cpfCnpj,
+            @RequestParam(required = false) StatusPagamento status) {
+        return service.filtrarPagamentos(codigoDebito, cpfCnpj, status);
+    }
 }
