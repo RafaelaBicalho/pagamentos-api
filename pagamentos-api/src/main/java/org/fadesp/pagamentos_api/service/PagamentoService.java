@@ -42,4 +42,27 @@ public class PagamentoService {
         return repository.save(pagamento);
     }
 
+    public List<Pagamento> filtrarPagamentos(Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
+        List<Pagamento> pagamentos = repository.findAll();
+
+        if (codigoDebito != null) {
+            pagamentos = pagamentos.stream()
+                    .filter(p -> p.getCodigoDebito().equals(codigoDebito))
+                    .toList();
+        }
+
+        if (cpfCnpj != null && !cpfCnpj.isBlank()) {
+            pagamentos = pagamentos.stream()
+                    .filter(p -> p.getCpfCnpj().equalsIgnoreCase(cpfCnpj))
+                    .toList();
+        }
+
+        if (status != null) {
+            pagamentos = pagamentos.stream()
+                    .filter(p -> p.getStatus() == status)
+                    .toList();
+        }
+        return pagamentos;
+    }
+
 }
