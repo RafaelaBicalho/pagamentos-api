@@ -1,5 +1,6 @@
 package org.fadesp.pagamentos_api.controller;
 
+import org.fadesp.pagamentos_api.enums.StatusPagamento;
 import org.fadesp.pagamentos_api.model.Pagamento;
 import org.fadesp.pagamentos_api.service.PagamentoService;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,12 @@ public class PagamentoController {
     @GetMapping
     public List<Pagamento> listarPagamentos() {
         return service.listarPagamentos();
+    }
+
+    @PatchMapping("/{id}/status")
+    public Pagamento atualizarStatusPagamento(
+            @PathVariable Long id,
+            @RequestParam("novoStatus") StatusPagamento novoStatus) {
+        return service.atualizarStatusPagamento(id, novoStatus);
     }
 }
