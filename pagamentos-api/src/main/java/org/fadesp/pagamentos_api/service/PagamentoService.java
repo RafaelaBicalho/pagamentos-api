@@ -25,4 +25,21 @@ public class PagamentoService {
         return repository.findAll();
     }
 
+    public Pagamento atualizarStatusPagamento(Long id, StatusPagamento novoStatus) {
+        Pagamento pagamento = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+
+        if(pagamento.getStatus() ==  StatusPagamento.PROCESSADO_SUCESSO) {
+            throw new RuntimeException("Pagamento processado com sucesso. Não pode ser alterado.");
+        }
+
+        if (pagamento.getStatus() == StatusPagamento.PROCESSADO_FALHA
+                && novoStatus != StatusPagamento.PENDENTE) {
+            throw new RuntimeException("Pagamento com falha só pode voltar para PENDENTE.");
+        }
+
+        pagamento.setStatus(novoStatus);
+        return repository.save(pagamento);
+    }
+
 }
