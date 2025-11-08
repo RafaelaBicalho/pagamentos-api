@@ -41,4 +41,9 @@ public class PagamentoController {
             @RequestParam(required = false) StatusPagamento status) {
         return service.filtrarPagamentos(codigoDebito, cpfCnpj, status);
     }
+
+    @DeleteMapping("/{id}")
+    public Pagamento excluirPagamento(@PathVariable Long id) {
+        return service.excluirPagamento(id);
+    }
 }
