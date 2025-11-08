@@ -65,4 +65,16 @@ public class PagamentoService {
         return pagamentos;
     }
 
+    public Pagamento excluirPagamento(Long id) {
+        Pagamento pagamento = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+
+        if (pagamento.getStatus() != StatusPagamento.PENDENTE) {
+            throw new RuntimeException("Somente pagamentos pendentes podem ser inativados.");
+        }
+
+        pagamento.setAtivo(false);
+        return repository.save(pagamento);
+    }
+
 }
