@@ -17,7 +17,22 @@ public class PagamentoService {
         this.repository = repository;
     }
 
+    private void validarCpfCnpj(String cpfCnpj) {
+        if (cpfCnpj == null || cpfCnpj.isBlank()) {
+            throw new RuntimeException("CPF ou CNPJ não pode ser vazio.");
+        }
+
+        String cleanedCpfCnpj = cpfCnpj.replaceAll("[^0-9]", "");
+
+        if (cleanedCpfCnpj.length() != 11 && cleanedCpfCnpj.length() != 14) {
+            throw new RuntimeException("CPF/CNPJ inválido. Deve conter 11 (CPF) ou 14 (CNPJ) dígitos numéricos.");
+        }
+
+    }
+
     public Pagamento criarPagamento(Pagamento pagamento) {
+        validarCpfCnpj(pagamento.getCpfCnpj());
+
         if (pagamento.getStatus() == null) {
             pagamento.setStatus(StatusPagamento.PENDENTE);
         }
@@ -52,9 +67,18 @@ public class PagamentoService {
         return repository.save(pagamento);
     }
 
-    public List<Pagamento> filtrarPagamentos(Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
+    public List<Pagamento> filtrarPagamentos(Long id, Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
+
+        if (cpfCnpj != null && !cpfCnpj.isBlank()) {
+            validarCpfCnpj(cpfCnpj);
+        }
 
         Specification<Pagamento> spec = Specification.anyOf();
+
+        if (id != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("id"), id));
+        }
 
         if (codigoDebito != null) {
             spec = spec.and((root, query, criteriaBuilder) ->

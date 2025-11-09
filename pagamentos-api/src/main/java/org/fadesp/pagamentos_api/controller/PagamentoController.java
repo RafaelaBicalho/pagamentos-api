@@ -126,9 +126,13 @@ public class PagamentoController {
 
     // --- Endpoint: GET /pagamentos/filtro (Filtrar) ---
     @Operation(summary = "Filtrar pagamentos",
-            description = "Filtra os pagamentos de acordo com os parâmetros opcionais: código do débito, CPF/CNPJ e status.")
+            description = "Filtra os pagamentos de acordo com os parâmetros opcionais: ID, código do débito, CPF/CNPJ e status.")
     @GetMapping("/filtro")
     public List<Pagamento> filtrarPagamentos(
+            // 🆕 NOVO FILTRO: ID
+            @Parameter(description = "ID do pagamento (opcional)", example = "10")
+            @RequestParam(required = false) Long id,
+
             @Parameter(description = "Código do débito (opcional)", example = "12345")
             @RequestParam(required = false) Integer codigoDebito,
             @Parameter(description = "CPF ou CNPJ do pagador (opcional)", example = "12345678901")
@@ -136,7 +140,8 @@ public class PagamentoController {
             @Parameter(description = "Status do pagamento (opcional)", example = "PENDENTE")
             @RequestParam(required = false) StatusPagamento status) {
 
-        return service.filtrarPagamentos(codigoDebito, cpfCnpj, status);
+        // 🎯 O MÉTODO DO SERVICE PRECISA SER ATUALIZADO PARA ACEITAR O PARÂMETRO 'id'
+        return service.filtrarPagamentos(id, codigoDebito, cpfCnpj, status);
     }
 
     // --- Endpoint: DELETE /pagamentos/{id} (Excluir/Inativar) ---
