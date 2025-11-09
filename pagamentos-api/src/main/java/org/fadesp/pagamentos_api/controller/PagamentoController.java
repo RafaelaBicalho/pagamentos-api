@@ -109,7 +109,7 @@ public class PagamentoController {
     @PatchMapping("/{id}/status")
     public Pagamento atualizarStatusPagamento(
             @PathVariable Long id,
-            @Parameter(description = "Novo status do pagamento. Valores: PENDENTE, PROCESSADO-SUCESSO, PROCESSADO-FALHA", required = true)
+            @Parameter(description = "Novo status do pagamento.", required = true, schema = @Schema(implementation = StatusPagamento.class))
             @RequestParam("novoStatus") String novoStatusStr) {
 
         String enumFormat = novoStatusStr.replace("-", "_").toUpperCase();

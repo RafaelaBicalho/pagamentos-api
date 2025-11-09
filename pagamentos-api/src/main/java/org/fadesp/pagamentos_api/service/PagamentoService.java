@@ -35,6 +35,10 @@ public class PagamentoService {
         Pagamento pagamento = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
+        if (pagamento.getStatus() == novoStatus) {
+            throw new RuntimeException("O status do pagamento já é " + novoStatus.name() + ". Não é permitida a alteração para o mesmo status.");
+        }
+
         if(pagamento.getStatus() == StatusPagamento.PROCESSADO_SUCESSO) {
             throw new RuntimeException("Pagamento processado com sucesso. Não pode ser alterado.");
         }
