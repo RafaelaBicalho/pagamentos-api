@@ -3,6 +3,7 @@ package org.fadesp.pagamentos_api.service;
 import org.fadesp.pagamentos_api.enums.StatusPagamento;
 import org.fadesp.pagamentos_api.model.Pagamento;
 import org.fadesp.pagamentos_api.repository.PagamentoRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,12 @@ public class PagamentoService {
     }
 
     public Pagamento criarPagamento(Pagamento pagamento) {
-        pagamento.setStatus(StatusPagamento.PENDENTE);
+        if (pagamento.getStatus() == null) {
+            pagamento.setStatus(StatusPagamento.PENDENTE);
+        }
+        if (pagamento.getAtivo() == null) {
+            pagamento.setAtivo(true);
+        }
         return repository.save(pagamento);
     }
 
@@ -29,7 +35,7 @@ public class PagamentoService {
         Pagamento pagamento = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
-        if(pagamento.getStatus() ==  StatusPagamento.PROCESSADO_SUCESSO) {
+        if(pagamento.getStatus() == StatusPagamento.PROCESSADO_SUCESSO) {
             throw new RuntimeException("Pagamento processado com sucesso. Não pode ser alterado.");
         }
 
@@ -43,26 +49,25 @@ public class PagamentoService {
     }
 
     public List<Pagamento> filtrarPagamentos(Integer codigoDebito, String cpfCnpj, StatusPagamento status) {
-        List<Pagamento> pagamentos = repository.findAll();
+
+        Specification<Pagamento> spec = Specification.anyOf();
 
         if (codigoDebito != null) {
-            pagamentos = pagamentos.stream()
-                    .filter(p -> p.getCodigoDebito().equals(codigoDebito))
-                    .toList();
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("codigoDebito"), codigoDebito));
         }
 
         if (cpfCnpj != null && !cpfCnpj.isBlank()) {
-            pagamentos = pagamentos.stream()
-                    .filter(p -> p.getCpfCnpj().equalsIgnoreCase(cpfCnpj))
-                    .toList();
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("cpfCnpj"), cpfCnpj));
         }
 
         if (status != null) {
-            pagamentos = pagamentos.stream()
-                    .filter(p -> p.getStatus() == status)
-                    .toList();
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("status"), status));
         }
-        return pagamentos;
+
+        return repository.findAll(spec);
     }
 
     public Pagamento excluirPagamento(Long id) {
@@ -76,5 +81,4 @@ public class PagamentoService {
         pagamento.setAtivo(false);
         return repository.save(pagamento);
     }
-
 }
