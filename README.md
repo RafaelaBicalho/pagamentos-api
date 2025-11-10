@@ -1,3 +1,6 @@
+## 💳 Pagamentos API
+Este projeto é uma API RESTful desenvolvida com Spring Boot em Java, criada para receber e gerenciar o fluxo de pagamentos de débitos de pessoas físicas e jurídicas. O sistema implementa um ciclo de vida de pagamento robusto, desde a criação inicial até o processamento, garantindo a integridade dos dados através de validações e regras de negócio estritas.
+
 ## 🛠️ Tecnologias Utilizadas
 
 - **Java 17**  
