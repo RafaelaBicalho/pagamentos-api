@@ -35,18 +35,12 @@ git clone https://github.com/RafaelaBicalho/pagamentos-api.git
 cd pagamentos-api
 ```
 
-2. Compile o projeto com Maven: Este passo gera o arquivo JAR executável:
-
-```bash
-mvn clean install
-```
-
-3. Construa os containers do Docker:
+2. Construa os containers do Docker:
 ```bash
 docker-compose build
 ```
 
-5. Execute a aplicação:
+3. Execute a aplicação:
 ```bash
 docker-compose run
 ```
